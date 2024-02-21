@@ -1,41 +1,51 @@
-//camada de interface da API que traduz HTTP
-import Categoria from "../Modelo/categoria.js";
+import Livro from "../Modelo/livro.js";
+import AutorDAO from "../Persistencia/autorDAO.js";
 
-export default class CategoriaCtrl {
+export default class LivroCtrl {
 
     gravar(requisicao, resposta) {
         resposta.type('application/json');
         if (requisicao.method === 'POST' && requisicao.is('application/json')) {
             const dados = requisicao.body;
-            const descricao = dados.descricao;
-            if (descricao) {
-                const categoria = new Categoria(0, descricao);
+            const titulo = dados.titulo;
+            const colecao = dados.colecao;
+            const editora = dados.editora;
+            const ano = dados.ano;
+            const qtdEstoque = dados.qtdEstoque;
+            const autor = dados.autor;
+
+
+            if (titulo && colecao > 0 && editora > 0 && ano
+                && qtdEstoque >= 0 && autor) {
+                const livro = new Livro(0, titulo, colecao,
+                    editora, ano, qtdEstoque, autor
+                );
                 //resolver a promise
-                categoria.gravar().then(() => {
+                livro.gravar().then(() => {
                     resposta.status(200).json({
                         "status": true,
-                        "codigoGerado": categoria.codigo,
-                        "mensagem": "Categoria incluída com sucesso!"
+                        "codigoGerado": livro.codigo,
+                        "mensagem": "Livro incluído com sucesso!"
                     });
                 })
                     .catch((erro) => {
                         resposta.status(500).json({
                             "status": false,
-                            "mensagem": "Erro ao registrar a categoria:" + erro.message
+                            "mensagem": "Erro ao registrar o livro:" + erro.message
                         });
                     });
             }
             else {
                 resposta.status(400).json({
                     "status": false,
-                    "mensagem": "Por favor, informe a descrição da categoria!"
+                    "mensagem": "Por favor, os dados do livro segundo a documentação da API!"
                 });
             }
         }
         else {
             resposta.status(400).json({
                 "status": false,
-                "mensagem": "Por favor, utilize o método POST para cadastrar uma categoria!"
+                "mensagem": "Por favor, utilize o método POST para cadastrar um livro!"
             });
         }
     }
@@ -45,34 +55,41 @@ export default class CategoriaCtrl {
         if ((requisicao.method === 'PUT' || requisicao.method === 'PATCH') && requisicao.is('application/json')) {
             const dados = requisicao.body;
             const codigo = dados.codigo;
-            const descricao = dados.descricao;
-            if (codigo && descricao) {
-                const categoria = new Categoria(codigo, descricao);
+            const titulo = dados.titulo;
+            const colecao = dados.colecao;
+            const editora = dados.editora;
+            const ano = dados.ano;
+            const qtdEstoque = dados.qtdEstoque;
+            const autor = dados.autor;
+            if (codigo && titulo && colecao > 0 && editora > 0 && ano
+                && qtdEstoque >= 0 && autor) {
+                const livro = new Livro(codigo, titulo, colecao,
+                    editora, ano, qtdEstoque, autor);
                 //resolver a promise
-                categoria.atualizar().then(() => {
+                livro.atualizar().then(() => {
                     resposta.status(200).json({
                         "status": true,
-                        "mensagem": "Categoria atualizada com sucesso!"
+                        "mensagem": "Livro atualizado com sucesso!"
                     });
                 })
                     .catch((erro) => {
                         resposta.status(500).json({
                             "status": false,
-                            "mensagem": "Erro ao atualizar a categoria:" + erro.message
+                            "mensagem": "Erro ao atualizar o livro:" + erro.message
                         });
                     });
             }
             else {
                 resposta.status(400).json({
                     "status": false,
-                    "mensagem": "Por favor, informe o código e a descrição da categoria!"
+                    "mensagem": "Por favor, informe todos os dados do livro segundo a documentação da API!"
                 });
             }
         }
         else {
             resposta.status(400).json({
                 "status": false,
-                "mensagem": "Por favor, utilize os métodos PUT ou PATCH para atualizar uma categoria!"
+                "mensagem": "Por favor, utilize os métodos PUT ou PATCH para atualizar um livro!"
             });
         }
     }
@@ -83,32 +100,32 @@ export default class CategoriaCtrl {
             const dados = requisicao.body;
             const codigo = dados.codigo;
             if (codigo) {
-                const categoria = new Categoria(codigo);
+                const livro = new Livro(codigo);
                 //resolver a promise
-                categoria.excluir().then(() => {
+                livro.atualizar().then(() => {
                     resposta.status(200).json({
                         "status": true,
-                        "mensagem": "Categoria excluída com sucesso!"
+                        "mensagem": "Livro excluído com sucesso!"
                     });
                 })
                     .catch((erro) => {
                         resposta.status(500).json({
                             "status": false,
-                            "mensagem": "Erro ao excluir a categoria:" + erro.message
+                            "mensagem": "Erro ao excluir o livro:" + erro.message
                         });
                     });
             }
             else {
                 resposta.status(400).json({
                     "status": false,
-                    "mensagem": "Por favor, informe o código da categoria!"
+                    "mensagem": "Por favor, informe o código do livro!"
                 });
             }
         }
         else {
             resposta.status(400).json({
                 "status": false,
-                "mensagem": "Por favor, utilize o método DELETE para excluir uma categoria!"
+                "mensagem": "Por favor, utilize o método DELETE para excluir um livro!"
             });
         }
     }
@@ -119,32 +136,31 @@ export default class CategoriaCtrl {
         //express, por meio do controle de rotas, será
         //preparado para esperar um termo de busca
         let termo = requisicao.params.termo;
-        if (!termo){
+        if (!termo) {
             termo = "";
         }
-        if (requisicao.method === "GET"){
-            const categoria = new Categoria();
-            categoria.consultar(termo).then((listaCategorias)=>{
+        if (requisicao.method === "GET") {
+            const livro = new Livro();
+            livro.consultar(termo).then((listaLivros) => {
                 resposta.json(
                     {
-                        status:true,
-                        listaCategorias
+                        status: true,
+                        listaLivros
                     });
             })
-            .catch((erro)=>{
-                resposta.json(
-                    {
-                        status:false,
-                        mensagem:"Não foi possível obter as categorias: " + erro.message
-                    }
-                );
-            });
+                .catch((erro) => {
+                    resposta.json(
+                        {
+                            status: false,
+                            mensagem: "Não foi possível obter os livros: " + erro.message
+                        }
+                    );
+                });
         }
-        else 
-        {
+        else {
             resposta.status(400).json({
                 "status": false,
-                "mensagem": "Por favor, utilize o método GET para consultar categorias!"
+                "mensagem": "Por favor, utilize o método GET para consultar livros!"
             });
         }
     }
