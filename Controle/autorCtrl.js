@@ -88,7 +88,7 @@ export default class AutorCtrl {
                 autor.excluir().then(() => {
                     resposta.status(200).json({
                         "status": true,
-                        "mensagem": "Autor excluída com sucesso!"
+                        "mensagem": "Autor excluído com sucesso!"
                     });
                 })
                     .catch((erro) => {

@@ -41,7 +41,7 @@ http://localhost:3000/livro
     "colecao": "Coleção do Livro",
     "editora": "Editora do Livro",
     "ano": "2024-02-21",
-    "qtdEstoque": 50.00,
+    "qtdEstoque": 50,
     "autor": {
         "codigo": 1
     }

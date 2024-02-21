@@ -33,16 +33,22 @@ export default class LivroDAO {
                 SET liv_titulo = ?, liv_colecao = ?, liv_editora = ?, 
                     liv_ano = ?, liv_qtdEstoque = ?, aut_codigo = ?
                 WHERE liv_codigo = ?`;
-
+    
             const parametros = [
                 livro.titulo, livro.colecao, livro.editora,
                 livro.ano, livro.qtdEstoque, livro.autor.codigo, livro.codigo
             ];
-
+    
             try {
                 const conexao = await conectar();
-                await conexao.execute(sql, parametros);
-                global.poolConexoes.releaseConnection(conexao);
+                const [resultado] = await conexao.execute(sql, parametros);
+    
+                if (resultado.affectedRows > 0) {
+                    global.poolConexoes.releaseConnection(conexao);
+                    return "Livro atualizado com sucesso!";
+                } else {
+                    return "Nenhum livro foi atualizado. Livro não encontrado.";
+                }
             } catch (erro) {
                 throw new Error(`Erro ao atualizar livro: ${erro.message}`);
             }

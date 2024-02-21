@@ -52,63 +52,52 @@ export default class LivroCtrl {
         }
     }
 
- async atualizar(requisicao, resposta) {
-    resposta.type('application/json');
+    async atualizar(requisicao, resposta) {
+        resposta.type('application/json');
     
-    try {
-        if ((requisicao.method === 'PUT' || requisicao.method === 'PATCH') && requisicao.is('application/json')) {
-            const dados = requisicao.body;
-            const { codigo, titulo, colecao, editora, ano, qtdEstoque, autor } = dados;
-
-            if (codigo && titulo && colecao && editora && ano && qtdEstoque >= 0 && autor && autor.codigo) {
-                const autorDAO = new AutorDAO();
-                const autorExistente = await autorDAO.consultar(autor.codigo);
-
-                if (autorExistente.length === 0) {
+        try {
+            if ((requisicao.method === 'PUT' || requisicao.method === 'PATCH') && requisicao.is('application/json')) {
+                const dados = requisicao.body;
+                const { codigo, titulo, colecao, editora, ano, qtdEstoque, autor } = dados;
+    
+                if (codigo && titulo && colecao && editora && ano && qtdEstoque >= 0 && autor && autor.codigo) {
+                    const autorDAO = new AutorDAO();
+                    const autorExistente = await autorDAO.consultar(autor.codigo);
+    
+                    if (autorExistente.length === 0) {
+                        resposta.status(400).json({
+                            status: false,
+                            mensagem: "Autor não encontrado. Informe um autor válido!"
+                        });
+                        return;
+                    }
+    
+                    const livroDAO = new LivroDAO();
+                    const mensagemAtualizacao = await livroDAO.atualizar(new Livro(codigo, titulo, colecao, editora, ano, qtdEstoque, autorExistente[0]));
+    
+                    resposta.status(200).json({
+                        status: true,
+                        mensagem: mensagemAtualizacao
+                    });
+                } else {
                     resposta.status(400).json({
                         status: false,
-                        mensagem: "Autor não encontrado. Informe um autor válido!"
+                        mensagem: "Por favor, informe todos os dados do livro segundo a documentação da API!"
                     });
-                    return;
                 }
-
-                const livroDAO = new LivroDAO();
-                const livroExistente = await livroDAO.consultar(codigo);
-
-                if (livroExistente.length === 0) {
-                    resposta.status(400).json({
-                        status: false,
-                        mensagem: "Livro não encontrado. Informe um livro válido!"
-                    });
-                    return;
-                }
-
-                const livro = new Livro(codigo, titulo, colecao, editora, ano, qtdEstoque, autorExistente[0]);
-                await livro.atualizar();
-
-                resposta.status(200).json({
-                    status: true,
-                    mensagem: "Livro atualizado com sucesso!"
-                });
             } else {
                 resposta.status(400).json({
                     status: false,
-                    mensagem: "Por favor, informe todos os dados do livro segundo a documentação da API!"
+                    mensagem: "Por favor, utilize os métodos PUT ou PATCH para atualizar um livro!"
                 });
             }
-        } else {
-            resposta.status(400).json({
+        } catch (erro) {
+            resposta.status(500).json({
                 status: false,
-                mensagem: "Por favor, utilize os métodos PUT ou PATCH para atualizar um livro!"
+                mensagem: "Erro ao atualizar o livro: " + erro.message
             });
         }
-    } catch (erro) {
-        resposta.status(500).json({
-            status: false,
-            mensagem: "Erro ao atualizar o livro: " + erro.message
-        });
     }
-}
 
 
     async excluir(requisicao, resposta) {
