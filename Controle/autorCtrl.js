@@ -15,7 +15,7 @@ export default class AutorCtrl {
                     resposta.status(200).json({
                         "status": true,
                         "codigoGerado": autor.codigo,
-                        "mensagem": "Autor incluída com sucesso!"
+                        "mensagem": "Autor incluído com sucesso!"
                     });
                 })
                     .catch((erro) => {
