@@ -7,10 +7,12 @@ export default class Produto{
     #precoVenda;
     #dataValidade;
     #qtdEstoque;
+    #categoria;
 
 
     constructor(codigo=0,descricao="", precoCusto=0, 
-                precoVenda=0,dataValidade='', qtdEstoque=0
+                precoVenda=0,dataValidade='', qtdEstoque=0,
+                categoria={}
                 ){
         this.#codigo=codigo;
         this.#descricao=descricao;
@@ -18,6 +20,7 @@ export default class Produto{
         this.#precoVenda=precoVenda;
         this.#dataValidade=dataValidade;
         this.#qtdEstoque=qtdEstoque;
+        this.#categoria=categoria;
     }
 
     get codigo(){
@@ -68,6 +71,15 @@ export default class Produto{
     }
 
 
+    get categoria(){
+        return this.#categoria;
+    }
+
+    set categoria(novaCat){
+        return this.#categoria = novaCat;
+    }
+
+
     toJSON(){
         return {
             codigo:this.#codigo,
@@ -76,6 +88,7 @@ export default class Produto{
             precoVenda:this.#precoVenda,
             dataValidade:this.#dataValidade,
             qtdEstoque:this.#qtdEstoque,
+            categoria:this.#categoria,
         }
     }
 
