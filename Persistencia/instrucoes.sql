@@ -22,7 +22,7 @@ CADASTRAR UM AUTOR
 POST
 http://localhost:3000/autor
 {
-    "nome": "Autores da Disney"
+    "nome": "Autor da Disney"
 }
 
 EXCLUIR UM AUTOR
@@ -54,3 +54,19 @@ http://localhost:3000/livro
     "codigo": 1 
 }
 *colocar o codigo do livro
+
+ALTERAR DADOS DO LIVRO
+PUT
+http://localhost:3000/livro
+{
+    "codigo": 10,
+    "titulo": "Título do Livro",
+    "colecao": "Coleção do Livro",
+    "editora": "Editora do Livro",
+    "ano": "2024-02-21",
+    "qtdEstoque": "75.00",
+    "autor": {
+        "codigo": 3,
+        "nome": "AutoresdaDisney"
+    }
+}
