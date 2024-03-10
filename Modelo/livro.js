@@ -7,12 +7,12 @@ export default class Livro{
     #editora;
     #ano;
     #qtdEstoque;
-    #autor;
+    #assunto;
 
 
     constructor(codigo=0,titulo="", colecao=0, 
                 editora=0,ano='', qtdEstoque=0,
-                autor={}
+                assunto={}
                 ){
         this.#codigo=codigo;
         this.#titulo=titulo;
@@ -20,7 +20,7 @@ export default class Livro{
         this.#editora=editora;
         this.#ano=ano;
         this.#qtdEstoque=qtdEstoque;
-        this.#autor=autor;
+        this.#assunto=assunto;
     }
 
     get codigo(){
@@ -71,12 +71,12 @@ export default class Livro{
     }
 
 
-    get autor(){
-        return this.#autor;
+    get assunto(){
+        return this.#assunto;
     }
 
-    set autor(novoAut){
-        return this.#autor = novoAut;
+    set assunto(novoAss){
+        return this.#assunto = novoAss;
     }
 
 
@@ -88,7 +88,7 @@ export default class Livro{
             editora:this.#editora,
             ano:this.#ano,
             qtdEstoque:this.#qtdEstoque,
-            autor:this.#autor,
+            assunto:this.#assunto,
         }
     }
 

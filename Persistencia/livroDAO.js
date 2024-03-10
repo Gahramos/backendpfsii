@@ -1,5 +1,5 @@
 import Livro from '../Modelo/livro.js';
-import Autor from '../Modelo/autor.js';
+import Assunto from '../Modelo/assunto.js';
 import conectar from './conexao.js';
 
 export default class LivroDAO {
@@ -7,12 +7,12 @@ export default class LivroDAO {
     async gravar(livro) {
         if (livro instanceof Livro) {
             const sql = `
-                INSERT INTO livro (liv_titulo, liv_colecao, liv_editora, liv_ano, liv_qtdEstoque, aut_codigo)
+                INSERT INTO livro (liv_titulo, liv_colecao, liv_editora, liv_ano, liv_qtdEstoque, ass_codigo)
                 VALUES (?, ?, ?, ?, ?, ?)`;
             
             const parametros = [
                 livro.titulo, livro.colecao, livro.editora,
-                livro.ano, livro.qtdEstoque, livro.autor.codigo
+                livro.ano, livro.qtdEstoque, livro.assunto.codigo
             ];
 
             try {
@@ -31,12 +31,12 @@ export default class LivroDAO {
             const sql = `
                 UPDATE livro 
                 SET liv_titulo = ?, liv_colecao = ?, liv_editora = ?, 
-                    liv_ano = ?, liv_qtdEstoque = ?, aut_codigo = ?
+                    liv_ano = ?, liv_qtdEstoque = ?, ass_codigo = ?
                 WHERE liv_codigo = ?`;
     
             const parametros = [
                 livro.titulo, livro.colecao, livro.editora,
-                livro.ano, livro.qtdEstoque, livro.autor.codigo, livro.codigo
+                livro.ano, livro.qtdEstoque, livro.assunto.codigo, livro.codigo
             ];
     
             try {
@@ -80,9 +80,9 @@ export default class LivroDAO {
 
         const sql = `
             SELECT p.liv_codigo, p.liv_titulo, p.liv_colecao, p.liv_editora, 
-                p.liv_ano, p.liv_qtdEstoque, autor.aut_codigo, autor.aut_nome
+                p.liv_ano, p.liv_qtdEstoque, assunto.ass_codigo, assunto.ass_nome
             FROM livro p
-            INNER JOIN autor ON p.aut_codigo = autor.aut_codigo 
+            INNER JOIN assunto ON p.ass_codigo = assunto.ass_codigo 
             WHERE p.liv_titulo LIKE ?
             ORDER BY p.liv_titulo`;
 
@@ -91,12 +91,12 @@ export default class LivroDAO {
         try {
             const [registros, campos] = await conexao.execute(sql, parametros);
             for (const registro of registros) {
-                const autor = new Autor(registro.aut_codigo, registro.aut_nome);
+                const assunto = new Assunto(registro.ass_codigo, registro.ass_nome);
                 const livro = new Livro(
                     registro.liv_codigo, registro.liv_titulo,
                     registro.liv_colecao, registro.liv_editora,
                     registro.liv_ano, registro.liv_qtdEstoque,
-                    autor
+                    assunto
                 );
                 listaLivros.push(livro);
             }

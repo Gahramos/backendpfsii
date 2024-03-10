@@ -1,5 +1,5 @@
 import Livro from "../Modelo/livro.js";
-import AutorDAO from "../Persistencia/autorDAO.js";
+import AssuntoDAO from "../Persistencia/assuntoDAO.js";
 import LivroDAO from "../Persistencia/livroDAO.js";
 
 export default class LivroCtrl {
@@ -10,21 +10,21 @@ export default class LivroCtrl {
         try {
             if (requisicao.method === 'POST' && requisicao.is('application/json')) {
                 const dados = requisicao.body;
-                const { titulo, colecao, editora, ano, qtdEstoque, autor } = dados;
+                const { titulo, colecao, editora, ano, qtdEstoque, assunto } = dados;
 
-                if (titulo && colecao && editora && ano && qtdEstoque >= 0 && autor && autor.codigo) {
-                    const autorDAO = new AutorDAO();
-                    const autorExistente = await autorDAO.consultar(autor.codigo);
+                if (titulo && colecao && editora && ano && qtdEstoque >= 0 && assunto && assunto.codigo) {
+                    const assuntoDAO = new AssuntoDAO();
+                    const assuntoExistente = await assuntoDAO.consultar(assunto.codigo);
 
-                    if (autorExistente.length === 0) {
+                    if (assuntoExistente.length === 0) {
                         resposta.status(400).json({
                             status: false,
-                            mensagem: "Autor não encontrado. Informe um autor válido!"
+                            mensagem: "Assunto não encontrado. Informe um assunto válido!"
                         });
                         return;
                     }
 
-                    const livro = new Livro(0, titulo, colecao, editora, ano, qtdEstoque, autorExistente[0]);
+                    const livro = new Livro(0, titulo, colecao, editora, ano, qtdEstoque, assuntoExistente[0]);
                     await livro.gravar();
 
                     resposta.status(200).json({
@@ -58,22 +58,22 @@ export default class LivroCtrl {
         try {
             if ((requisicao.method === 'PUT' || requisicao.method === 'PATCH') && requisicao.is('application/json')) {
                 const dados = requisicao.body;
-                const { codigo, titulo, colecao, editora, ano, qtdEstoque, autor } = dados;
+                const { codigo, titulo, colecao, editora, ano, qtdEstoque, assunto } = dados;
     
-                if (codigo && titulo && colecao && editora && ano && qtdEstoque >= 0 && autor && autor.codigo) {
-                    const autorDAO = new AutorDAO();
-                    const autorExistente = await autorDAO.consultar(autor.codigo);
+                if (codigo && titulo && colecao && editora && ano && qtdEstoque >= 0 && assunto && assunto.codigo) {
+                    const assuntoDAO = new AssuntoDAO();
+                    const assuntoExistente = await assuntoDAO.consultar(assunto.codigo);
     
-                    if (autorExistente.length === 0) {
+                    if (assuntoExistente.length === 0) {
                         resposta.status(400).json({
                             status: false,
-                            mensagem: "Autor não encontrado. Informe um autor válido!"
+                            mensagem: "Assunto não encontrado. Informe um assunto válido!"
                         });
                         return;
                     }
     
                     const livroDAO = new LivroDAO();
-                    const mensagemAtualizacao = await livroDAO.atualizar(new Livro(codigo, titulo, colecao, editora, ano, qtdEstoque, autorExistente[0]));
+                    const mensagemAtualizacao = await livroDAO.atualizar(new Livro(codigo, titulo, colecao, editora, ano, qtdEstoque, assuntoExistente[0]));
     
                     resposta.status(200).json({
                         status: true,

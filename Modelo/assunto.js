@@ -1,7 +1,7 @@
-import AutorDAO from "../Persistencia/autorDAO.js";
+import AssuntoDAO from "../Persistencia/assuntoDAO.js";
 //não esqueça do .js no final da importação
 
-export default class Autor {
+export default class Assunto {
     //definição dos atributos privados
     #codigo;
     #nome;
@@ -40,23 +40,23 @@ export default class Autor {
 
     //camada de modelo acessa a camada de persistencia
     async gravar(){
-        const autDAO = new AutorDAO();
-        await autDAO.gravar(this);
+        const assDAO = new AssuntoDAO();
+        await assDAO.gravar(this);
     }
 
     async excluir(){
-        const autDAO = new AutorDAO();
-        await autDAO.excluir(this);
+        const assDAO = new AssuntoDAO();
+        await assDAO.excluir(this);
     }
 
     async atualizar(){
-        const autDAO = new AutorDAO();
-        await autDAO.atualizar(this);
+        const assDAO = new AssuntoDAO();
+        await assDAO.atualizar(this);
 
     }
 
     async consultar(parametro){
-        const autDAO = new AutorDAO();
-        return await autDAO.consultar(parametro);
+        const assDAO = new AssuntoDAO();
+        return await assDAO.consultar(parametro);
     }
 }

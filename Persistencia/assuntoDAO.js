@@ -1,49 +1,49 @@
-import Autor from "../Modelo/autor.js";
+import Assunto from "../Modelo/assunto.js";
 import conectar from "./conexao.js";
 
-export default class AutorDAO {
-    async gravar(autor) {
+export default class AssuntoDAO {
+    async gravar(assunto) {
         try {
-            if (autor instanceof Autor) {
-                const sql = "INSERT INTO autor(aut_nome) VALUES(?)";
-                const parametros = [autor.nome];
+            if (assunto instanceof Assunto) {
+                const sql = "INSERT INTO assunto(ass_nome) VALUES(?)";
+                const parametros = [assunto.nome];
                 const conexao = await conectar();
                 const retorno = await conexao.execute(sql, parametros);
-                autor.codigo = retorno[0].insertId;
+                assunto.codigo = retorno[0].insertId;
                 global.poolConexoes.releaseConnection(conexao);
             }
         } catch (erro) {
-            console.error("Erro ao gravar autor:", erro.message);
+            console.error("Erro ao gravar assunto:", erro.message);
             throw erro;
         }
     }
 
-    async atualizar(autor) {
+    async atualizar(assunto) {
         try {
-            if (autor instanceof Autor) {
-                const sql = "UPDATE autor SET aut_nome = ? WHERE aut_codigo = ?";
-                const parametros = [autor.nome, autor.codigo];
+            if (assunto instanceof Assunto) {
+                const sql = "UPDATE assunto SET ass_nome = ? WHERE ass_codigo = ?";
+                const parametros = [assunto.nome, assunto.codigo];
                 const conexao = await conectar();
                 await conexao.execute(sql, parametros);
                 global.poolConexoes.releaseConnection(conexao);
             }
         } catch (erro) {
-            console.error("Erro ao atualizar autor:", erro.message);
+            console.error("Erro ao atualizar assunto:", erro.message);
             throw erro;
         }
     }
 
-    async excluir(autor) {
+    async excluir(assunto) {
         try {
-            if (autor instanceof Autor) {
-                const sql = "DELETE FROM autor WHERE aut_codigo = ?";
-                const parametros = [autor.codigo];
+            if (assunto instanceof Assunto) {
+                const sql = "DELETE FROM assunto WHERE ass_codigo = ?";
+                const parametros = [assunto.codigo];
                 const conexao = await conectar();
                 await conexao.execute(sql, parametros);
                 global.poolConexoes.releaseConnection(conexao);
             }
         } catch (erro) {
-            console.error("Erro ao excluir autor:", erro.message);
+            console.error("Erro ao excluir assunto:", erro.message);
             throw erro;
         }
     }
@@ -54,25 +54,25 @@ export default class AutorDAO {
             let parametros = [];
 
             if (typeof parametroConsulta === 'string') {
-                sql = "SELECT * FROM autor WHERE aut_nome LIKE ?";
+                sql = "SELECT * FROM assunto WHERE ass_nome LIKE ?";
                 parametros = ['%' + parametroConsulta + '%'];
             } else {
-                sql = "SELECT * FROM autor WHERE aut_codigo = ? ORDER BY aut_nome";
+                sql = "SELECT * FROM assunto WHERE ass_codigo = ? ORDER BY ass_nome";
                 parametros = [parametroConsulta];
             }
 
             const conexao = await conectar();
             const [registros, campos] = await conexao.execute(sql, parametros);
-            let listaAutores = [];
+            let listaAssuntos = [];
 
             for (const registro of registros) {
-                const autor = new Autor(registro.aut_codigo, registro.aut_nome);
-                listaAutores.push(autor);
+                const assunto = new Assunto(registro.ass_codigo, registro.ass_nome);
+                listaAssuntos.push(assunto);
             }
 
-            return listaAutores;
+            return listaAssuntos;
         } catch (erro) {
-            console.error("Erro ao consultar autores:", erro.message);
+            console.error("Erro ao consultar assuntos:", erro.message);
             throw erro;
         }
     }

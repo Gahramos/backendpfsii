@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import rotaAutor from './Rotas/rotaAutor.js';
+import rotaAssunto from './Rotas/rotaAssunto.js';
 import rotaLivro from './Rotas/rotaLivro.js';
 import rotaLogin from './Rotas/rotaLogin.js';
 import dotenv from 'dotenv';
@@ -25,7 +25,7 @@ app.use(session({
 
 app.use('/login',rotaLogin);
 
-app.use('/autor',verificarAcesso,rotaAutor);
+app.use('/assunto',verificarAcesso,rotaAssunto);
 app.use('/livro',verificarAcesso,rotaLivro);
 
 app.listen(porta, host, ()=>{

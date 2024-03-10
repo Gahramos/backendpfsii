@@ -1,7 +1,7 @@
-CREATE TABLE autor (
-    aut_codigo INT NOT NULL AUTO_INCREMENT,
-    aut_nome VARCHAR(100) NOT NULL,
-    CONSTRAINT pk_autor PRIMARY KEY (aut_codigo)
+CREATE TABLE assunto (
+    ass_codigo INT NOT NULL AUTO_INCREMENT,
+    ass_nome VARCHAR(100) NOT NULL,
+    CONSTRAINT pk_assunto PRIMARY KEY (ass_codigo)
 );
 
 CREATE TABLE livro (
@@ -11,23 +11,23 @@ CREATE TABLE livro (
     liv_editora VARCHAR(100) NOT NULL,
     liv_ano DATE,
     liv_qtdEstoque DECIMAL(10,2) NOT NULL DEFAULT 0,
-    aut_codigo INT NOT NULL,
+    ass_codigo INT NOT NULL,
     CONSTRAINT pk_livro PRIMARY KEY (liv_codigo),
-    CONSTRAINT fk_autor FOREIGN KEY (aut_codigo) REFERENCES autor (aut_codigo)
+    CONSTRAINT fk_assunto FOREIGN KEY (ass_codigo) REFERENCES assunto (ass_codigo)
 );
 
 
 
-CADASTRAR UM AUTOR
+CADASTRAR UM ASSUNTO
 POST
-http://localhost:3000/autor
+http://localhost:3000/assunto
 {
-    "nome": "Autor da Disney"
+    "nome": "Em busca da felicidade"
 }
 
-EXCLUIR UM AUTOR
+EXCLUIR UM ASSUNTO
 DELETE
-http://localhost:3000/autor
+http://localhost:3000/assunto
 
 {
     "codigo": "1" Exemplo: numero do codigo
@@ -42,7 +42,7 @@ http://localhost:3000/livro
     "editora": "Editora do Livro",
     "ano": "2024-02-21",
     "qtdEstoque": 50,
-    "autor": {
+    "assunto": {
         "codigo": 1
     }
 }
@@ -65,8 +65,8 @@ http://localhost:3000/livro
     "editora": "Editora do Livro",
     "ano": "2024-02-21",
     "qtdEstoque": "75.00",
-    "autor": {
+    "assunto": {
         "codigo": 3,
-        "nome": "AutoresdaDisney"
+        "nome": "Em busca da felicidade"
     }
 }

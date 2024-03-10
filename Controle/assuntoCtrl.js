@@ -1,7 +1,7 @@
 //camada de interface da API que traduz HTTP
-import Autor from "../Modelo/autor.js";
+import Assunto from "../Modelo/assunto.js";
 
-export default class AutorCtrl {
+export default class AssuntoCtrl {
 
     gravar(requisicao, resposta) {
         resposta.type('application/json');
@@ -9,33 +9,33 @@ export default class AutorCtrl {
             const dados = requisicao.body;
             const nome = dados.nome;
             if (nome) {
-                const autor = new Autor(0, nome);
+                const assunto = new Assunto(0, nome);
                 //resolver a promise
-                autor.gravar().then(() => {
+                assunto.gravar().then(() => {
                     resposta.status(200).json({
                         "status": true,
-                        "codigoGerado": autor.codigo,
-                        "mensagem": "Autor incluído com sucesso!"
+                        "codigoGerado": assunto.codigo,
+                        "mensagem": "Assunto incluído com sucesso!"
                     });
                 })
                     .catch((erro) => {
                         resposta.status(500).json({
                             "status": false,
-                            "mensagem": "Erro ao registrar a autor:" + erro.message
+                            "mensagem": "Erro ao registrar a assunto:" + erro.message
                         });
                     });
             }
             else {
                 resposta.status(400).json({
                     "status": false,
-                    "mensagem": "Por favor, informe a descrição da autor!"
+                    "mensagem": "Por favor, informe a descrição da assunto!"
                 });
             }
         }
         else {
             resposta.status(400).json({
                 "status": false,
-                "mensagem": "Por favor, utilize o método POST para cadastrar uma autor!"
+                "mensagem": "Por favor, utilize o método POST para cadastrar uma assunto!"
             });
         }
     }
@@ -47,32 +47,32 @@ export default class AutorCtrl {
             const codigo = dados.codigo;
             const nome = dados.nome;
             if (codigo && nome) {
-                const autor = new Autor(codigo, nome);
+                const assunto = new Assunto(codigo, nome);
                 //resolver a promise
-                autor.atualizar().then(() => {
+                assunto.atualizar().then(() => {
                     resposta.status(200).json({
                         "status": true,
-                        "mensagem": "Autor atualizada com sucesso!"
+                        "mensagem": "Assunto atualizada com sucesso!"
                     });
                 })
                     .catch((erro) => {
                         resposta.status(500).json({
                             "status": false,
-                            "mensagem": "Erro ao atualizar a autor:" + erro.message
+                            "mensagem": "Erro ao atualizar a assunto:" + erro.message
                         });
                     });
             }
             else {
                 resposta.status(400).json({
                     "status": false,
-                    "mensagem": "Por favor, informe o código e a descrição da autor!"
+                    "mensagem": "Por favor, informe o código e a descrição da assunto!"
                 });
             }
         }
         else {
             resposta.status(400).json({
                 "status": false,
-                "mensagem": "Por favor, utilize os métodos PUT ou PATCH para atualizar uma autor!"
+                "mensagem": "Por favor, utilize os métodos PUT ou PATCH para atualizar uma assunto!"
             });
         }
     }
@@ -83,32 +83,32 @@ export default class AutorCtrl {
             const dados = requisicao.body;
             const codigo = dados.codigo;
             if (codigo) {
-                const autor = new Autor(codigo);
+                const assunto = new Assunto(codigo);
                 //resolver a promise
-                autor.excluir().then(() => {
+                assunto.excluir().then(() => {
                     resposta.status(200).json({
                         "status": true,
-                        "mensagem": "Autor excluído com sucesso!"
+                        "mensagem": "Assunto excluído com sucesso!"
                     });
                 })
                     .catch((erro) => {
                         resposta.status(500).json({
                             "status": false,
-                            "mensagem": "Erro ao excluir a autor:" + erro.message
+                            "mensagem": "Erro ao excluir a assunto:" + erro.message
                         });
                     });
             }
             else {
                 resposta.status(400).json({
                     "status": false,
-                    "mensagem": "Por favor, informe o código da autor!"
+                    "mensagem": "Por favor, informe o código da assunto!"
                 });
             }
         }
         else {
             resposta.status(400).json({
                 "status": false,
-                "mensagem": "Por favor, utilize o método DELETE para excluir uma autor!"
+                "mensagem": "Por favor, utilize o método DELETE para excluir uma assunto!"
             });
         }
     }
@@ -123,19 +123,19 @@ export default class AutorCtrl {
             termo = "";
         }
         if (requisicao.method === "GET"){
-            const autor = new Autor();
-            autor.consultar(termo).then((listaAutores)=>{
+            const assunto = new Assunto();
+            assunto.consultar(termo).then((listaAssuntos)=>{
                 resposta.json(
                     {
                         status:true,
-                        listaAutores
+                        listaAssuntos
                     });
             })
             .catch((erro)=>{
                 resposta.json(
                     {
                         status:false,
-                        mensagem:"Não foi possível obter as autores: " + erro.message
+                        mensagem:"Não foi possível obter as assuntos: " + erro.message
                     }
                 );
             });
@@ -144,7 +144,7 @@ export default class AutorCtrl {
         {
             resposta.status(400).json({
                 "status": false,
-                "mensagem": "Por favor, utilize o método GET para consultar autores!"
+                "mensagem": "Por favor, utilize o método GET para consultar assuntos!"
             });
         }
     }
