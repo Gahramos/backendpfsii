@@ -2,78 +2,64 @@ import Assunto from "../Modelo/assunto.js";
 import conectar from "./conexao.js";
 
 export default class AssuntoDAO {
-    async gravar(assunto) {
-        try {
-            if (assunto instanceof Assunto) {
-                const sql = "INSERT INTO assunto(ass_nome) VALUES(?)";
-                const parametros = [assunto.nome];
+    async gravar(assuntos) {
+            if (assuntos instanceof Assunto) {
+                const sql = "INSERT INTO assuntos(ass_nome) VALUES(?)";
+                const parametros = [assuntos.nome];
                 const conexao = await conectar();
                 const retorno = await conexao.execute(sql, parametros);
-                assunto.codigo = retorno[0].insertId;
+                assuntos.codigo = retorno[0].insertId;
                 global.poolConexoes.releaseConnection(conexao);
-            }
-        } catch (erro) {
-            console.error("Erro ao gravar assunto:", erro.message);
-            throw erro;
         }
     }
 
-    async atualizar(assunto) {
-        try {
-            if (assunto instanceof Assunto) {
+    async atualizar(assuntos) {
+            if (assuntos instanceof Assunto) {
                 const sql = "UPDATE assunto SET ass_nome = ? WHERE ass_codigo = ?";
-                const parametros = [assunto.nome, assunto.codigo];
+                const parametros = [assuntos.nome, assuntos.codigo];
                 const conexao = await conectar();
                 await conexao.execute(sql, parametros);
                 global.poolConexoes.releaseConnection(conexao);
             }
-        } catch (erro) {
-            console.error("Erro ao atualizar assunto:", erro.message);
-            throw erro;
-        }
     }
 
-    async excluir(assunto) {
-        try {
-            if (assunto instanceof Assunto) {
-                const sql = "DELETE FROM assunto WHERE ass_codigo = ?";
-                const parametros = [assunto.codigo];
-                const conexao = await conectar();
-                await conexao.execute(sql, parametros);
-                global.poolConexoes.releaseConnection(conexao);
-            }
-        } catch (erro) {
-            console.error("Erro ao excluir assunto:", erro.message);
-            throw erro;
-        }
-    }
-
-    async consultar(parametroConsulta) {
-        try {
-            let sql = '';
-            let parametros = [];
-
-            if (typeof parametroConsulta === 'string') {
-                sql = "SELECT * FROM assunto WHERE ass_nome LIKE ?";
-                parametros = ['%' + parametroConsulta + '%'];
-            } else {
-                sql = "SELECT * FROM assunto WHERE ass_codigo = ? ORDER BY ass_nome";
-                parametros = [parametroConsulta];
-            }
-
+    async excluir(assuntos) {
+        if (assuntos instanceof Assunto) {
+            const sql = "DELETE FROM assunto WHERE ass_codigo = ?";
+            const parametros = [assuntos.codigo];
             const conexao = await conectar();
-            const [registros, campos] = await conexao.execute(sql, parametros);
-            let listaAssuntos = [];
-
-            for (const registro of registros) {
-                const assunto = new Assunto(registro.ass_codigo, registro.ass_nome);
-                listaAssuntos.push(assunto);
-            }
-
-            return listaAssuntos;
-        } catch (erro) {
-            console.error("Erro ao consultar assuntos:", erro.message);
-            throw erro;
+            await conexao.execute(sql, parametros);
+            global.poolConexoes.releaseConnection(conexao);
         }
     }
-}
+
+    async consultar(termo){
+
+        var condicao="";
+        let valores;
+    
+        if (!isNaN(parseFloat(termo)) && isFinite(termo)){
+            condicao = " ass_codigo = "
+            valores = [termo];
+        }
+        else{
+            condicao = " ass_nome LIKE "
+            valores = ['%' + termo +'%'];
+        }
+        const conexao = await conectar();
+        const sql = "SELECT * FROM assuntos WHERE "+condicao+" ? ORDER BY ass_nome";
+        console.log(sql);
+        const [rows] = await conexao.query(sql,valores);
+        global.poolConexoes.releaseConnection(conexao);
+        const listaAss = [];
+    
+        for(const row of rows){
+           
+            const assuntos = new Assunto(row['ass_codigo'],row['dep_nome']);
+            listaAss.push(assuntos );
+        }
+    
+        return listaAss;
+    }
+    
+    }

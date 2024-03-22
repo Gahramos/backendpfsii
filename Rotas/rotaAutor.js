@@ -1,18 +1,15 @@
 import { Router } from "express";
-import AssuntoCtrl from "../Controle/assuntoCtrl.js";
+import AutorCtrl from "../Controle/autorCtrl.js";
 
-//rotas é o mapeamento das requisições da web para um determinado
-//endpoint da aplicação
+const autCtrl = new AutorCtrl();
+const rotaAutor = new Router();
 
-const assCtrl = new AssuntoCtrl();
-const rotaAssunto = new Router();
+rotaAutor
+.get('/',autCtrl.consultar)
+.get('/:termo', autCtrl.consultar)
+.post('/',autCtrl.gravar)
+.patch('/',autCtrl.atualizar)
+.put('/',autCtrl.atualizar)
+.delete('/',autCtrl.excluir);
 
-rotaAssunto
-.get('/',assCtrl.consultar)
-.get('/:termo', assCtrl.consultar)
-.post('/',assCtrl.gravar)
-.patch('/',assCtrl.atualizar)
-.put('/',assCtrl.atualizar)
-.delete('/',assCtrl.excluir);
-
-export default rotaAssunto;
+export default rotaAutor;

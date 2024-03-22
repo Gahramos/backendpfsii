@@ -1,94 +1,98 @@
 import LivroDAO from "../Persistencia/livroDAO.js";
 
 export default class Livro{
-    #codigo;
-    #titulo;
-    #colecao;
-    #editora;
-    #ano;
-    #qtdEstoque;
-    #assunto;
+    #liv_codigo;
+    #liv_titulo;
+    #liv_colecao;
+    #liv_editora;
+    #liv_ano;
+    #liv_qtdEstoque;
+    #liv_autor;
+    #assuntos;
 
 
-    constructor(codigo=0,titulo="", colecao=0, 
-                editora=0,ano='', qtdEstoque=0,
-                assunto={}
-                ){
-        this.#codigo=codigo;
-        this.#titulo=titulo;
-        this.#colecao=colecao;
-        this.#editora=editora;
-        this.#ano=ano;
-        this.#qtdEstoque=qtdEstoque;
-        this.#assunto=assunto;
+    constructor(codigo=0,titulo="", colecao=0, editora=0,ano='', qtdEstoque=0, autor, assuntos){              
+        this.#liv_codigo=codigo;
+        this.#liv_titulo=titulo;
+        this.#liv_colecao=colecao;
+        this.#liv_editora=editora;
+        this.#liv_ano=ano;
+        this.#liv_qtdEstoque=qtdEstoque;
+        this.#liv_autor=autor;
+        this.#assuntos = assuntos;
     }
 
     get codigo(){
-        return this.#codigo;
+        return this.#liv_codigo;
     }
     set codigo(novoCodigo){
-        this.#codigo = novoCodigo;
+        this.#liv_codigo = novoCodigo;
     }
 
     get titulo(){
-        return this.#titulo;
+        return this.#liv_titulo;
     }
 
     set titulo(novaDesc){
-        this.#titulo=novaDesc;
+        this.#liv_titulo=novaDesc;
     }
 
     get colecao(){
-        return this.#colecao;
+        return this.#liv_colecao;
     }
 
     set colecao(novoPreco){
-        this.#colecao = novoPreco
+        this.#liv_colecao = novoPreco
     }
 
     get editora(){
-        return this.#editora;
+        return this.#liv_editora;
     }
     
     set editora(novoPreco){
-        this.#editora = novoPreco
+        this.#liv_editora = novoPreco
     }
 
     get ano(){
-        return this.#ano;
+        return this.#liv_ano;
     }
 
     set ano(novaData){
-        this.#ano = novaData;
+        this.#liv_ano = novaData;
     }
 
     get qtdEstoque(){
-        return this.#qtdEstoque;
+        return this.#liv_qtdEstoque;
     }
 
     set qtdEstoque(novaQtd){
-        this.#qtdEstoque = novaQtd;
+        this.#liv_qtdEstoque = novaQtd;
     }
 
 
-    get assunto(){
-        return this.#assunto;
+    get autor(){
+        return this.#liv_autor;
     }
 
-    set assunto(novoAss){
-        return this.#assunto = novoAss;
+    set autor(novoAut){
+        return this.#liv_autor = novoAut;
+    }
+
+    get assuntos(){
+        return this.#assuntos
     }
 
 
     toJSON(){
         return {
-            codigo:this.#codigo,
-            titulo:this.#titulo,
-            colecao:this.#colecao,
-            editora:this.#editora,
-            ano:this.#ano,
-            qtdEstoque:this.#qtdEstoque,
-            assunto:this.#assunto,
+            codigo:this.#liv_codigo,
+            titulo:this.#liv_titulo,
+            colecao:this.#liv_colecao,
+            editora:this.#liv_editora,
+            ano:this.#liv_ano,
+            qtdEstoque:this.#liv_qtdEstoque,
+            autor:this.#liv_autor,
+            assuntos: this.#assuntos
         }
     }
 

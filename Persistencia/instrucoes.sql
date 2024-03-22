@@ -70,3 +70,45 @@ http://localhost:3000/livro
         "nome": "Em busca da felicidade"
     }
 }
+
+
+-- Tabela para armazenar informações sobre os Livros
+CREATE TABLE Livros (
+    LivroID INT PRIMARY KEY,
+    Titulo VARCHAR(255) NOT NULL,
+    liv_colecao VARCHAR(100) NOT NULL,
+    liv_editora VARCHAR(100) NOT NULL,
+    liv_ano DATE,
+    liv_qtdEstoque DECIMAL(10,2) NOT NULL DEFAULT 0,
+
+);
+
+-- Tabela para armazenar informações sobre os Autores
+CREATE TABLE Autores (
+    AutorID INT PRIMARY KEY,
+    Nome VARCHAR(255) NOT NULL,
+    Nacionalidade VARCHAR(100),
+);
+
+-- Tabela de associação para representar o relacionamento muitos para muitos
+CREATE TABLE LivrosAutores (
+    LivroID INT,
+    AutorID INT,
+    PRIMARY KEY (LivroID, AutorID),
+    FOREIGN KEY (LivroID) REFERENCES Livros(LivroID),
+    FOREIGN KEY (AutorID) REFERENCES Autores(AutorID)
+);
+
+-- Exemplo de inserção de dados
+INSERT INTO Livros (LivroID, Titulo, AnoPublicacao) VALUES
+(1, 'Livro A', 2000),
+(2, 'Livro B', 2010);
+
+INSERT INTO Autores (AutorID, Nome, Nacionalidade) VALUES
+(1, 'Autor X', 'Brasileiro'),
+(2, 'Autor Y', 'Americano');
+
+INSERT INTO LivrosAutores (LivroID, AutorID) VALUES
+(1, 1), -- Livro A é escrito pelo Autor X
+(1, 2), -- Livro A é coescrito pelo Autor Y
+(2, 2); -- Livro B é escrito pelo Autor Y

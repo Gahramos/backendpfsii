@@ -1,169 +1,172 @@
+import Autor from "../Modelo/autor.js";
+import Assunto from "../Modelo/assunto.js";
+import AssuntoLivro from "../Modelo/assuntoLivro.js";
 import Livro from "../Modelo/livro.js";
-import AssuntoDAO from "../Persistencia/assuntoDAO.js";
-import LivroDAO from "../Persistencia/livroDAO.js";
 
 export default class LivroCtrl {
 
-    async gravar(requisicao, resposta) {
+    gravar(requisicao, resposta) {
         resposta.type('application/json');
-        
-        try {
-            if (requisicao.method === 'POST' && requisicao.is('application/json')) {
-                const dados = requisicao.body;
-                const { titulo, colecao, editora, ano, qtdEstoque, assunto } = dados;
+        if (requisicao.method === 'POST' && requisicao.is('application/json')) {
 
-                if (titulo && colecao && editora && ano && qtdEstoque >= 0 && assunto && assunto.codigo) {
-                    const assuntoDAO = new AssuntoDAO();
-                    const assuntoExistente = await assuntoDAO.consultar(assunto.codigo);
+            const dados = requisicao.body;
+            const titulo = dados.titulo;
+            const colecao = dados.colecao;
+            const editora = dados.editora;
+            const ano = dados.ano;
+            const qtdEstoque = dados.qtdEstoque;
+            const autor = dados.autor;
+            const assuntoLivro = dados.assuntos;
 
-                    if (assuntoExistente.length === 0) {
-                        resposta.status(400).json({
-                            status: false,
-                            mensagem: "Assunto não encontrado. Informe um assunto válido!"
+            const objAutor = new Autor(autor.codigo);
+
+            const assuntos = [];
+            for (const assunto of assuntoLivro) {
+                const ass = new Assunto(assunto.codigo)
+
+                const objAssuntoLivro = new AssuntoLivro(ass,assunto.parentesco)
+
+                assuntos.push(objAssuntoLivro);
+            }
+
+            const livro = Livro(0,titulo,colecao,editora,ano,qtdEstoque,objAutor,assuntos);
+                livro.gravar().then(() => {
+                    resposta.status(200).json({
+                        "status": true,
+                        "codigoGerado": livro.codigo,
+                        "mensagem": "Livro cadastrado com sucesso!"
+                    })
+                })
+
+                    .catch((erro) => {
+                     resposta.status(500).json({
+                            "status": false,
+                            "mensagem": "Erro ao cadastrado o livro:" + erro.message
                         });
-                        return;
-                    }
-
-                    const livro = new Livro(0, titulo, colecao, editora, ano, qtdEstoque, assuntoExistente[0]);
-                    await livro.gravar();
-
-                    resposta.status(200).json({
-                        status: true,
-                        codigoGerado: livro.codigo,
-                        mensagem: "Livro incluído com sucesso!"
                     });
-                } else {
-                    resposta.status(400).json({
-                        status: false,
-                        mensagem: "Por favor, forneça todos os dados do livro segundo a documentação da API!"
-                    });
-                }
-            } else {
-                resposta.status(400).json({
-                    status: false,
-                    mensagem: "Por favor, utilize o método POST para cadastrar um livro!"
-                });
-            }
-        } catch (erro) {
-            resposta.status(500).json({
-                status: false,
-                mensagem: "Erro ao registrar o livro: " + erro.message
+        }
+        else {
+            resposta.status(400).json({
+                "status": false,
+                "mensagem": "Por favor, utilize o método POST para cadastrar um livro!"
             });
         }
     }
 
-    async atualizar(requisicao, resposta) {
+    atualizar(requisicao, resposta) {
         resposta.type('application/json');
-    
-        try {
-            if ((requisicao.method === 'PUT' || requisicao.method === 'PATCH') && requisicao.is('application/json')) {
-                const dados = requisicao.body;
-                const { codigo, titulo, colecao, editora, ano, qtdEstoque, assunto } = dados;
-    
-                if (codigo && titulo && colecao && editora && ano && qtdEstoque >= 0 && assunto && assunto.codigo) {
-                    const assuntoDAO = new AssuntoDAO();
-                    const assuntoExistente = await assuntoDAO.consultar(assunto.codigo);
-    
-                    if (assuntoExistente.length === 0) {
-                        resposta.status(400).json({
-                            status: false,
-                            mensagem: "Assunto não encontrado. Informe um assunto válido!"
+        if ((requisicao.method === 'PUT' || requisicao.method === 'PATCH') && requisicao.is('application/json')) {
+            const dados = requisicao.body;
+            const codigo = dados.codigo;
+            const titulo = dados.titulo;
+            const colecao = dados.colecao;
+            const editora = dados.editora;
+            const ano = dados.ano;
+            const qtdEstoque = dados.qtdEstoque;
+            const autor = dados.autor;
+            const assuntoLivro = dados.assuntos;
+
+
+            const objAutor = new Autor(autor.codigo);
+
+            const assuntos = [];
+            for (const assunto of assuntoLivro) {
+                    const ass = new Assunto(assunto.codigo);
+                    const objAssuntoLivro = new AssuntoLivro(ass,assunto.parentesco);
+                    assuntos.push(objAssuntoLivro);
+            }
+
+            const livro = new Livro(codigo,titulo,colecao,editora,ano,qtdEstoque,objAutor,assuntos);
+            
+                //resolver a promise
+                livro.atualizar().then(() => {
+                    resposta.status(200).json({
+                        "status": true,
+                        "mensagem": "Livro alterado com sucesso!"
+                    });
+                })
+                    .catch((erro) => {
+                        resposta.status(500).json({
+                            "status": false,
+                            "mensagem": "Erro ao alterar o livro:" + erro.message
                         });
-                        return;
-                    }
-    
-                    const livroDAO = new LivroDAO();
-                    const mensagemAtualizacao = await livroDAO.atualizar(new Livro(codigo, titulo, colecao, editora, ano, qtdEstoque, assuntoExistente[0]));
-    
+                    });
+        }
+        else {
+            resposta.status(400).json({
+                "status": false,
+                "mensagem": "Por favor, utilize os métodos PUT ou PATCH para alterar um livro!"
+            });
+        }
+    }
+
+    excluir(requisicao, resposta) {
+        resposta.type('application/json');
+        if (requisicao.method === 'DELETE' && requisicao.is('application/json')) {
+            const dados = requisicao.body;
+            const codigo = dados.codigo;
+            if (codigo) {
+                const livro = new Livro(codigo);
+                //resolver a promise
+                livro.excluir().then(() => {
                     resposta.status(200).json({
-                        status: true,
-                        mensagem: mensagemAtualizacao
+                        "status": true,
+                        "mensagem": "Livro apagado com sucesso!"
                     });
-                } else {
-                    resposta.status(400).json({
-                        status: false,
-                        mensagem: "Por favor, informe todos os dados do livro segundo a documentação da API!"
+                })
+                    .catch((erro) => {
+                        resposta.status(500).json({
+                            "status": false,
+                            "mensagem": "Erro ao apagado o livro:" + erro.message
+                        });
                     });
-                }
-            } else {
+            }
+            else {
                 resposta.status(400).json({
-                    status: false,
-                    mensagem: "Por favor, utilize os métodos PUT ou PATCH para atualizar um livro!"
+                    "status": false,
+                    "mensagem": "Por favor, informe o código do livro!"
                 });
             }
-        } catch (erro) {
-            resposta.status(500).json({
-                status: false,
-                mensagem: "Erro ao atualizar o livro: " + erro.message
+        }
+        else {
+            resposta.status(400).json({
+                "status": false,
+                "mensagem": "Por favor, utilize o método DELETE para excluir um livro!"
             });
         }
     }
 
 
-    async excluir(requisicao, resposta) {
+    consultar(requisicao, resposta) {
         resposta.type('application/json');
+       
+        let termo = requisicao.params.termo;
         
-        try {
-            if (requisicao.method === 'DELETE' && requisicao.is('application/json')) {
-                const dados = requisicao.body;
-                const codigo = dados.codigo;
-
-                if (codigo) {
-                    const livro = new Livro(codigo);
-                    await livro.excluir();
-
-                    resposta.status(200).json({
-                        status: true,
-                        mensagem: "Livro excluído com sucesso!"
-                    });
-                } else {
-                    resposta.status(400).json({
-                        status: false,
-                        mensagem: "Por favor, informe o código do livro!"
-                    });
-                }
-            } else {
-                resposta.status(400).json({
-                    status: false,
-                    mensagem: "Por favor, utilize o método DELETE para excluir um livro!"
-                });
-            }
-        } catch (erro) {
-            resposta.status(500).json({
-                status: false,
-                mensagem: "Erro ao excluir o livro: " + erro.message
-            });
+        if (!termo) {
+            termo = "";
         }
-    }
-
-    async consultar(requisicao, resposta) {
-        resposta.type('application/json');
-        
-        try {
-            //express, por meio do controle de rotas, será
-            //preparado para esperar um termo de busca
-            let termo = requisicao.params.termo;
-            if (!termo) {
-                termo = "";
-            }
-
-            if (requisicao.method === "GET") {
-                const livro = new Livro();
-                const listaLivros = await livro.consultar(termo);
-                resposta.json({
-                    status: true,
-                    listaLivros
+        if (requisicao.method === "GET") {
+            const livro = new Livro();
+            livro.consultar(termo).then((listaLivros) => {
+                resposta.json(
+                    {
+                        status: true,
+                        listaLivros
+                    });
+            })
+                .catch((erro) => {
+                    resposta.json(
+                        {
+                            status: false,
+                            mensagem: "Não foi possível obter os livros: " + erro.message
+                        }
+                    );
                 });
-            } else {
-                resposta.status(400).json({
-                    status: false,
-                    mensagem: "Por favor, utilize o método GET para consultar livros!"
-                });
-            }
-        } catch (erro) {
-            resposta.status(500).json({
-                status: false,
-                mensagem: "Não foi possível obter os livros: " + erro.message
+        }
+        else {
+            resposta.status(400).json({
+                "status": false,
+                "mensagem": "Por favor, utilize o método GET para consultar os livros!"
             });
         }
     }
