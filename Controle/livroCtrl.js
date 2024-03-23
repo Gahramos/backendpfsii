@@ -2,7 +2,7 @@ import Autor from "../Modelo/autor.js";
 import Assunto from "../Modelo/assunto.js";
 import AssuntoLivro from "../Modelo/assuntoLivro.js";
 import Livro from "../Modelo/livro.js";
-
+import LivroDAO from "../Persistencia/livroDAO.js";
 export default class LivroCtrl {
 
     gravar(requisicao, resposta) {
@@ -15,22 +15,22 @@ export default class LivroCtrl {
             const editora = dados.editora;
             const ano = dados.ano;
             const qtdEstoque = dados.qtdEstoque;
-            const autor = dados.autor;
-            const assuntoLivro = dados.assuntos;
+            //const autor = dados.autor;
+            //const assuntoLivro = dados.assuntos;
 
-            const objAutor = new Autor(autor.codigo);
+            // const objAutor = new Autor(autor.codigo);
 
-            const assuntos = [];
-            for (const assunto of assuntoLivro) {
-                const ass = new Assunto(assunto.codigo)
+            // const assuntos = [];
+            // for (const assunto of assuntoLivro) {
+            //     const ass = new Assunto(assunto.codigo)
 
-                const objAssuntoLivro = new AssuntoLivro(ass,assunto.parentesco)
+            //     const objAssuntoLivro = new AssuntoLivro(ass,assunto.parentesco)
 
-                assuntos.push(objAssuntoLivro);
-            }
+            //     assuntos.push(objAssuntoLivro);
+            // }
 
-            const livro = Livro(0,titulo,colecao,editora,ano,qtdEstoque,objAutor,assuntos);
-                livro.gravar().then(() => {
+            const livro = new Livro(0,titulo,colecao,editora,dados.ano,qtdEstoque/*,objAutor,assuntos*/);
+                livro.gravar(livro).then(() => {
                     resposta.status(200).json({
                         "status": true,
                         "codigoGerado": livro.codigo,

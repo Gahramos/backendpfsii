@@ -6,13 +6,15 @@ export default class LivroDAO {
 
     async gravar(livro) {
         if (livro instanceof Livro) {
+            console.log("teste" +livro.length)
             const sql = `
-                INSERT INTO livro (liv_titulo, liv_colecao, liv_editora, liv_ano, liv_qtdEstoque, aut_codigo)
-                VALUES (?, ?, ?, ?, ?, ?)`;
+            INSERT INTO Livro (titulo, colecao, editora, ano, qtdEstoque) 
+            VALUES 
+            ('?', '?', '?', '?', ?)`;
             
             const parametros = [
                 livro.titulo, livro.colecao, livro.editora,
-                livro.ano, livro.qtdEstoque, livro.autor.codigo
+                livro.ano, livro.qtdEstoque
             ];
 
             try {
@@ -74,7 +76,7 @@ export default class LivroDAO {
         if (!termo) {
             termo = "";
         }
-console.log ("teste")
+
         const conexao = await conectar();
         let listaLivros = [];
         const sql = `
@@ -93,7 +95,7 @@ console.log ("teste")
 
         try {
             const [registros, campos] = await conexao.execute(sql, parametros);
-console.log (registros.length)          
+         
             for (const registro of registros) {
                 const autor = new Autor(registro.codigo_autor, registro.nome_autor);
                 const livro = new Livro(

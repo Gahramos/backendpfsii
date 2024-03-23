@@ -7,19 +7,19 @@ export default class Livro{
     #liv_editora;
     #liv_ano;
     #liv_qtdEstoque;
-    #liv_autor;
-    #assuntos;
+    //#liv_autor;
+    //#assuntos;
 
 
-    constructor(codigo=0,titulo="", colecao=0, editora=0,ano='', qtdEstoque=0, autor, assuntos){              
+    constructor(codigo=0,titulo="", colecao=0, editora=0,ano='', qtdEstoque=0 /*,autor, assuntos*/){              
         this.#liv_codigo=codigo;
         this.#liv_titulo=titulo;
         this.#liv_colecao=colecao;
         this.#liv_editora=editora;
         this.#liv_ano=ano;
         this.#liv_qtdEstoque=qtdEstoque;
-        this.#liv_autor=autor;
-        this.#assuntos = assuntos;
+        //this.#liv_autor=autor;
+        //this.#assuntos = assuntos;
     }
 
     get codigo(){
@@ -33,54 +33,54 @@ export default class Livro{
         return this.#liv_titulo;
     }
 
-    set titulo(novaDesc){
-        this.#liv_titulo=novaDesc;
+    set titulo(novoTitulo){
+        this.#liv_titulo=novoTitulo;
     }
 
     get colecao(){
         return this.#liv_colecao;
     }
 
-    set colecao(novoPreco){
-        this.#liv_colecao = novoPreco
+    set colecao(novaColecao){
+        this.#liv_colecao = novaColecao
     }
 
     get editora(){
         return this.#liv_editora;
     }
     
-    set editora(novoPreco){
-        this.#liv_editora = novoPreco
+    set editora(novaEditora){
+        this.#liv_editora = novaEditora
     }
 
     get ano(){
         return this.#liv_ano;
     }
 
-    set ano(novaData){
-        this.#liv_ano = novaData;
+    set ano(novoAno){
+        this.#liv_ano = novoAno;
     }
 
     get qtdEstoque(){
         return this.#liv_qtdEstoque;
     }
 
-    set qtdEstoque(novaQtd){
-        this.#liv_qtdEstoque = novaQtd;
+    set qtdEstoque(novaQtdEstoque){
+        this.#liv_qtdEstoque = novaQtdEstoque;
     }
 
 
-    get autor(){
-        return this.#liv_autor;
-    }
+    // get autor(){
+    //     return this.#liv_autor;
+    // }
 
-    set autor(novoAut){
-        return this.#liv_autor = novoAut;
-    }
+    // set autor(novoAut){
+    //     return this.#liv_autor = novoAut;
+    // }
 
-    get assuntos(){
-        return this.#assuntos
-    }
+    // get assuntos(){
+    //     return this.#assuntos
+    // }
 
 
     toJSON(){
@@ -90,9 +90,9 @@ export default class Livro{
             colecao:this.#liv_colecao,
             editora:this.#liv_editora,
             ano:this.#liv_ano,
-            qtdEstoque:this.#liv_qtdEstoque,
-            autor:this.#liv_autor,
-            assuntos: this.#assuntos
+            qtdEstoque:this.#liv_qtdEstoque//,
+            //autor:this.#liv_autor,
+            //assuntos: this.#assuntos
         }
     }
 
