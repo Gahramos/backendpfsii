@@ -9,13 +9,13 @@ export default async function conectar(){
     }
     else{
         const pool = mysql.createPool({
-            host: process.env.HOST,
+            host: process.env.HOST_BD,
             user: process.env.USUARIO_BD, 
             password: process.env.SENHA_BD,  
            // host: 'localhost',
             //user: 'root', 
             //password:'',  
-            database: process.env.DATABASE,
+            database: process.env.DATABASE_BD,
             waitForConnections: true,
             connectionLimit: 10,
             maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
